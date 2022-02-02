@@ -1,13 +1,15 @@
-import { google } from 'googleapis';
+const { google } = require('googleapis');
 
 /*******************/
 /** CONFIGURATION **/
 /*******************/
 
 const googleConfig = {
-  clientId: 'http://182262981073-uga3b3m0aef91no72ap00ung2oupc557.apps.googleusercontent.com/', // e.g. asdfghjkljhgfdsghjk.apps.googleusercontent.com
-  clientSecret: "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", // e.g. _ASDFA%DFASDFASDFASD#FAD-
-  redirect: 'https://your-website.com/google-auth' // this must match your google api settings
+  // clientId: "182262981073-uga3b3m0aef91no72ap00ung2oupc557.apps.googleusercontent.com/",
+  clientId: "636528711514-1cihfcmvoao2s8cpfla8rgu0rt4o365t.apps.googleusercontent.com",
+  // clientSecret: "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",
+  clientSecret: "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",
+  redirect: 'http://localhost:4000/auth/google/callback' // this must match your google api settings
 };
 
 const defaultScope = [
@@ -34,7 +36,7 @@ function createConnection() {
 /**
  * Get a url which will open the google sign-in page and request access to the scope provided (such as calendar events).
  */
- function getConnectionUrl(auth) {
+function getConnectionUrl(auth) {
   return auth.generateAuthUrl({
     access_type: 'offline',
     prompt: 'consent', // access type and approval prompt will force a new refresh token to be made each time signs in
@@ -54,7 +56,7 @@ function getGooglePlusApi(auth) {
  * Part 1: Create a Google URL and send to the client to log in the user.
  */
 
-function urlGoogle() {
+module.exports =  function urlGoogle() {
   const auth = createConnection(); // this is from previous step
   const url = getConnectionUrl(auth);
   return url;
@@ -63,10 +65,10 @@ function urlGoogle() {
 /**
  * Part 2: Take the "code" parameter which Google gives us once when the user logs in, then get the user's email and id.
  */
- function getGoogleAccountFromCode(code) {
+module.exports = async function getGoogleAccountFromCode(code) {
+  const auth = createConnection();
   const data = await auth.getToken(code);
   const tokens = data.tokens;
-  const auth = createConnection();
   auth.setCredentials(tokens);
   const plus = getGooglePlusApi(auth);
   const me = await plus.people.get({ userId: 'me' });

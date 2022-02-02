@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const userRoutes = require('./routes/userRoutes')
+const googleRoutes = require('./routes/googleRoutes')
 
 const connect = mongoose.connect(
   "mongodb+srv://admin:admin@cluster0.ww2is.mongodb.net/test?authSource=admin&replicaSet=atlas-q9mulc-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true",
@@ -29,5 +30,6 @@ app.get('/send', (req, res) => {
 });
 
 app.use("/api/user", userRoutes);
+app.use("/auth/google", googleRoutes)
 
 module.exports = app;

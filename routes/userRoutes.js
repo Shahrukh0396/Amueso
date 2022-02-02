@@ -1,6 +1,7 @@
 const express = require("express");
 const User = require("../models/userModel");
 const Joi = require('joi');
+const urlGoogle = require("../src/google-util");
 
 var router = express.Router();
 
@@ -106,6 +107,19 @@ router.get("/:user_id", async (req, res) => {
       error: true,
       message: err.message
     })
+  }
+})
+
+router.get("/google/:user_id", async (req, res) => {
+  const { user_id } = req.params;
+  console.log(typeof urlGoogle)
+  try {
+    const google_url = await urlGoogle();
+    console.log(google_url, "URL")
+    res.status(200).json({ url: google_url })
+  } catch (error) {
+    console.log(error)
+    res.status(400).json({ message: error })
   }
 })
 
