@@ -1,7 +1,6 @@
 const express = require("express");
 const User = require("../models/userModel");
 const Joi = require('joi');
-const urlGoogle = require("../src/google-util");
 
 var router = express.Router();
 
@@ -34,20 +33,20 @@ router.post("/signup", async (req, res) => {
             user.salt = undefined;
             user.hash_password = undefined;
             console.log('done', user)
-            res.status(200).json({
+            return res.status(200).json({
               message: "Your Account is Successfully Created",
               data: user,
               error: false
             });
           } else {
-            res.status(400).json({ error: true, message: err });
+            return res.status(400).json({ error: true, message: err });
           }
         })
       }
     }
   } catch (err) {
     console.log(err)
-    res.status(400).json({
+    return res.status(400).json({
       message: err.message,
       error: true
     });
@@ -75,7 +74,7 @@ router.post("/login", async (req, res) => {
       }
       user.save();
       res.setHeader("Content-Type", "application/json");
-      res.status(200).json({
+      return res.status(200).json({
         success: true,
         status: "you are succesfully logged in",
         data: user,
@@ -83,7 +82,7 @@ router.post("/login", async (req, res) => {
     }
   } catch (err) {
     console.log(err)
-    res.status(400).json({
+    return res.status(400).json({
       message: err.message,
       error: true
 
@@ -96,30 +95,17 @@ router.get("/:user_id", async (req, res) => {
     const { user_id } = req.params;
     const user = await User.findOne({ _id: user_id })
     if (user) {
-      res.status(200).json({
+      return res.status(200).json({
         data: user
       })
     } else {
       console.log("fix api")
     }
   } catch (err) {
-    res.status(400).json({
+    return res.status(400).json({
       error: true,
       message: err.message
     })
-  }
-})
-
-router.get("/google/:user_id", async (req, res) => {
-  const { user_id } = req.params;
-  console.log(typeof urlGoogle)
-  try {
-    const google_url = await urlGoogle();
-    console.log(google_url, "URL")
-    res.status(200).json({ url: google_url })
-  } catch (error) {
-    console.log(error)
-    res.status(400).json({ message: error })
   }
 })
 

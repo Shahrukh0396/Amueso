@@ -56,7 +56,7 @@ function getGooglePlusApi(auth) {
  * Part 1: Create a Google URL and send to the client to log in the user.
  */
 
-module.exports =  function urlGoogle() {
+exports.urlGoogle =  function() {
   const auth = createConnection(); // this is from previous step
   const url = getConnectionUrl(auth);
   return url;
@@ -65,7 +65,7 @@ module.exports =  function urlGoogle() {
 /**
  * Part 2: Take the "code" parameter which Google gives us once when the user logs in, then get the user's email and id.
  */
-module.exports = async function getGoogleAccountFromCode(code) {
+exports.getGoogleAccountFromCode = async function(code) {
   const auth = createConnection();
   const data = await auth.getToken(code);
   const tokens = data.tokens;
